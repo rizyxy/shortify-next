@@ -37,22 +37,22 @@ export default async function register(previousState: RegisterFormState, formDat
             }),
         });
 
-        const { message } = await response.json();
+        const { error } = await response.json();
 
         if (response.ok) {
             return {
-                message: message,
+                message: null,
                 errors: null,
             };
         }
 
         return {
-            message: `${message}`,
+            message: error,
             errors: null
         };
     } catch (error) {
         return {
-            message: `Something went wrong ${error}`,
+            message: `Something went wrong`,
             errors: null
         };
     }
