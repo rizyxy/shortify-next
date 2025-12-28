@@ -2,6 +2,7 @@
 
 import { LoginSchema } from "@/lib/schema/auth/login-schema";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import z from "zod";
 
 export default async function login(previousState: LoginFormState, formData: FormData): Promise<LoginFormState> {
@@ -53,10 +54,7 @@ export default async function login(previousState: LoginFormState, formData: For
         path: "/",
     });
 
-    return {
-        message: "Login successful",
-        errors: null
-    }
+    redirect("/links");
 }
 
 interface LoginFormState {

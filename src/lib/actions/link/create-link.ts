@@ -62,17 +62,14 @@ export default async function createLink(previousState: CreateLinkFormState, for
             };
 
         }
-
-        return {
-            message: null,
-            errors: null,
-        };
     } catch (error) {
         return {
-            message: `Something went wrong`,
+            message: `Something went wrong ${error}`,
             errors: null
         };
     }
+
+    redirect('/links');
 }
 
 interface CreateLinkFormState {
