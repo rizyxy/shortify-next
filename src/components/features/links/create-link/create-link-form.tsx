@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
   FieldSet,
@@ -14,11 +15,25 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { LucideLink2 } from "lucide-react";
+import createLink from "@/lib/actions/link/create-link";
+import { LucideLink2, LucideLoaderCircle } from "lucide-react";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 
 export default function CreateLinkForm() {
+  const [state, formAction, isPending] = useActionState(createLink, {
+    message: null,
+    errors: null,
+  });
+
+  useEffect(() => {
+    if (state.message) {
+      toast(state.message);
+    }
+  }, [state.message]);
+
   return (
-    <form>
+    <form action={formAction}>
       <FieldSet>
         <FieldTitle className="text-xl font-bold">Shorten an URL</FieldTitle>
         <FieldGroup>
@@ -33,6 +48,7 @@ export default function CreateLinkForm() {
                 <LucideLink2 />
               </InputGroupAddon>
             </InputGroup>
+            {state.errors?.url && <FieldError>{state.errors.url}</FieldError>}
           </Field>
           <Field>
             <FieldLabel>Shortened URL</FieldLabel>
@@ -43,8 +59,17 @@ export default function CreateLinkForm() {
                 <LucideLink2 />
               </InputGroupAddon>
             </InputGroup>
+            {state.errors?.shortUrl && (
+              <FieldError>{state.errors.shortUrl}</FieldError>
+            )}
           </Field>
-          <Button type="submit">Shorten URL</Button>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? (
+              <LucideLoaderCircle className="animate-spin" />
+            ) : (
+              "Shorten URL"
+            )}
+          </Button>
         </FieldGroup>
       </FieldSet>
     </form>
