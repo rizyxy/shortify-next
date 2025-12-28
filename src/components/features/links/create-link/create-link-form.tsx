@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import {
   Field,
+  FieldDescription,
   FieldGroup,
   FieldLabel,
   FieldSet,
@@ -19,30 +20,31 @@ export default function CreateLinkForm() {
   return (
     <form>
       <FieldSet>
-        <FieldTitle className="text-xl font-bold">Shorten a link</FieldTitle>
+        <FieldTitle className="text-xl font-bold">Shorten an URL</FieldTitle>
         <FieldGroup>
           <Field>
-            <FieldLabel>Original Link</FieldLabel>
+            <FieldLabel>Original URL</FieldLabel>
+            <FieldDescription>
+              Enter the URL you want to shorten
+            </FieldDescription>
             <InputGroup>
-              <InputGroupInput
-                name="originalLink"
-                placeholder="https://example.com"
-              />
+              <InputGroupInput name="url" placeholder="https://example.com" />
               <InputGroupAddon>
                 <LucideLink2 />
               </InputGroupAddon>
             </InputGroup>
           </Field>
           <Field>
-            <FieldLabel>Shortened Link</FieldLabel>
+            <FieldLabel>Shortened URL</FieldLabel>
+            <FieldDescription>Give your URL a custom alias</FieldDescription>
             <InputGroup>
-              <InputGroupInput name="shortenedLink" placeholder="example" />
+              <InputGroupInput name="shortUrl" placeholder="example" />
               <InputGroupAddon>
                 <LucideLink2 />
               </InputGroupAddon>
             </InputGroup>
           </Field>
-          <Button type="submit">Shorten</Button>
+          <Button type="submit">Shorten URL</Button>
         </FieldGroup>
       </FieldSet>
     </form>
