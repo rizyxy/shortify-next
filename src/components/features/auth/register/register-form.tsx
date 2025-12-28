@@ -1,6 +1,9 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Field,
+  FieldError,
   FieldGroup,
   FieldLabel,
   FieldSet,
@@ -11,12 +14,26 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { LucideLock, LucideMail } from "lucide-react";
+import register from "@/lib/actions/auth/register";
+import { LucideLoaderCircle, LucideLock, LucideMail } from "lucide-react";
 import Link from "next/link";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 
 export default function RegisterForm() {
+  const [state, formAction, isPending] = useActionState(register, {
+    message: null,
+    errors: null,
+  });
+
+  useEffect(() => {
+    if (state.message) {
+      toast(state.message);
+    }
+  }, [state.message]);
+
   return (
-    <form>
+    <form action={formAction}>
       <FieldSet>
         <FieldTitle className="text-xl font-bold">Create an account</FieldTitle>
         <FieldGroup>
@@ -28,6 +45,9 @@ export default function RegisterForm() {
                 <LucideMail />
               </InputGroupAddon>
             </InputGroup>
+            {state.errors?.email && (
+              <FieldError>{state.errors.email}</FieldError>
+            )}
           </Field>
           <Field>
             <FieldLabel>Password</FieldLabel>
@@ -37,6 +57,9 @@ export default function RegisterForm() {
                 <LucideLock />
               </InputGroupAddon>
             </InputGroup>
+            {state.errors?.password && (
+              <FieldError>{state.errors.password}</FieldError>
+            )}
           </Field>
           <Field>
             <FieldLabel>Retype Password</FieldLabel>
@@ -46,8 +69,17 @@ export default function RegisterForm() {
                 <LucideLock />
               </InputGroupAddon>
             </InputGroup>
+            {state.errors?.confirmPassword && (
+              <FieldError>{state.errors.confirmPassword}</FieldError>
+            )}
           </Field>
-          <Button type="submit">Create Account</Button>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? (
+              <LucideLoaderCircle className="animate-spin" />
+            ) : (
+              "Create Account"
+            )}
+          </Button>
           <p className="text-center">
             Already have an account?{" "}
             <Link
