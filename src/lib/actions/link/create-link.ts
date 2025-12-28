@@ -3,6 +3,8 @@
 import { CreateLinkSchema } from "@/lib/schema/link/create-link-schema";
 import { cookies } from "next/headers";
 import z from "zod";
+import refresh from "../auth/refresh";
+import { redirect } from "next/navigation";
 
 export default async function createLink(previousState: CreateLinkFormState, formData: FormData) {
     try {
@@ -25,9 +27,9 @@ export default async function createLink(previousState: CreateLinkFormState, for
             };
         }
 
-        const accessToken = (await cookies()).get("accessToken")?.value;
+        let accessToken = (await cookies()).get("accessToken")?.value;
 
-        const response = await fetch(`${process.env.EXPRESS_URL}/links/create`, {
+        const createLink = async (token: string | undefined) => await fetch(`${process.env.EXPRESS_URL}/links/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -39,18 +41,31 @@ export default async function createLink(previousState: CreateLinkFormState, for
             }),
         });
 
-        const { error } = await response.json();
+        let response = await createLink(accessToken);
 
-        if (response.ok) {
+        if (response.status === 401 || response.status === 403) {
+            const refreshSuccess = await refresh();
+            if (refreshSuccess) {
+                accessToken = (await cookies()).get("accessToken")?.value;
+                response = await createLink(accessToken);
+            } else {
+                redirect("/auth/login");
+            }
+        }
+
+        if (!response.ok) {
+            const { error } = await response.json();
+
             return {
-                message: null,
-                errors: null,
+                message: error,
+                errors: null
             };
+
         }
 
         return {
-            message: error,
-            errors: null
+            message: null,
+            errors: null,
         };
     } catch (error) {
         return {
