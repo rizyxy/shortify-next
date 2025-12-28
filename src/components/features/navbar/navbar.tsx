@@ -15,8 +15,12 @@ import {
 } from "@/components/ui/sheet";
 import { LucideMenu } from "lucide-react";
 import Link from "next/link";
+import LogoutButton from "../auth/logout/logout-button";
+import { cookies } from "next/headers";
 
-export default function Navbar() {
+export default async function Navbar() {
+  const isAuthenticated = (await cookies()).has("accessToken");
+
   return (
     <header className="w-full">
       <nav className="p-5">
@@ -36,13 +40,25 @@ export default function Navbar() {
                   <SheetHeader>
                     <SheetTitle className="text-lg">Menu</SheetTitle>
                   </SheetHeader>
+                  {isAuthenticated && (
+                    <div className="px-10 flex flex-col gap-5">
+                      <Link href={"/links"}>Links</Link>
+                      <Link href={"/links/create"}>Shorten Link</Link>
+                    </div>
+                  )}
                   <SheetFooter>
-                    <Button variant="default">
-                      <Link href={"/auth/login"}>Login</Link>
-                    </Button>
-                    <Button variant="secondary">
-                      <Link href="/auth/register">Register</Link>
-                    </Button>
+                    {isAuthenticated ? (
+                      <LogoutButton />
+                    ) : (
+                      <>
+                        <Button variant="default">
+                          <Link href={"/auth/login"}>Login</Link>
+                        </Button>
+                        <Button variant="secondary">
+                          <Link href="/auth/register">Register</Link>
+                        </Button>
+                      </>
+                    )}
                   </SheetFooter>
                 </SheetContent>
               </Sheet>
