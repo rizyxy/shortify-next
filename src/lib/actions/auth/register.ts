@@ -1,6 +1,7 @@
 "use server";
 
 import { RegisterSchema } from "@/lib/schema/auth/register-schema";
+import { redirect } from "next/navigation";
 import z from "zod";
 
 export default async function register(previousState: RegisterFormState, formData: FormData): Promise<RegisterFormState> {
@@ -39,23 +40,20 @@ export default async function register(previousState: RegisterFormState, formDat
 
         const { error } = await response.json();
 
-        if (response.ok) {
+        if (!response.ok) {
             return {
-                message: null,
+                message: error,
                 errors: null,
             };
         }
-
-        return {
-            message: error,
-            errors: null
-        };
     } catch (error) {
         return {
             message: `Something went wrong`,
             errors: null
         };
     }
+
+    redirect('/auth/login');
 }
 
 interface RegisterFormState {
