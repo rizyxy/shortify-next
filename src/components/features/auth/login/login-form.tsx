@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import {
   Field,
+  FieldError,
   FieldGroup,
   FieldLabel,
   FieldSet,
@@ -13,12 +14,26 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { LucideLock, LucideMail } from "lucide-react";
+import login from "@/lib/actions/auth/login";
+import { LucideLoaderCircle, LucideLock, LucideMail } from "lucide-react";
 import Link from "next/link";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 
 export default function LoginForm() {
+  const [state, formAction, isPending] = useActionState(login, {
+    message: null,
+    errors: null,
+  });
+
+  useEffect(() => {
+    if (state.message) {
+      toast(state.message);
+    }
+  }, [state.message]);
+
   return (
-    <form>
+    <form action={formAction}>
       <FieldSet>
         <FieldTitle className="text-xl font-bold">
           Login to your account
@@ -32,6 +47,9 @@ export default function LoginForm() {
                 <LucideMail />
               </InputGroupAddon>
             </InputGroup>
+            {state.errors?.email && (
+              <FieldError>{state.errors.email}</FieldError>
+            )}
           </Field>
           <Field>
             <FieldLabel>Password</FieldLabel>
@@ -41,9 +59,17 @@ export default function LoginForm() {
                 <LucideLock />
               </InputGroupAddon>
             </InputGroup>
+            {state.errors?.password && (
+              <FieldError>{state.errors.password}</FieldError>
+            )}
           </Field>
-
-          <Button type="submit">Login</Button>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? (
+              <LucideLoaderCircle className="animate-spin" />
+            ) : (
+              "Login"
+            )}
+          </Button>
           <p className="text-center">
             Don't have an account?{" "}
             <Link
