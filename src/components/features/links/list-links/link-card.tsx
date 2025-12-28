@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
 import Link from "@/lib/types/link";
+import { DeleteLinkForm } from "../delete-link/delete-link-form";
 
 export function LinkCard({ link }: { link: Link }) {
   return (
@@ -8,12 +8,7 @@ export function LinkCard({ link }: { link: Link }) {
         <h2 className="text-lg font-semibold">{link.shortUrl}</h2>
         <p className="text-sm text-gray-500">{link.url}</p>
       </div>
-      <Button
-        className="self-end hover:cursor-pointer hover:opacity-80"
-        variant={"destructive"}
-      >
-        Delete
-      </Button>
+      <DeleteLinkForm linkId={link.id} />
     </div>
   );
 }
