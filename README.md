@@ -15,7 +15,6 @@ A sleek, modern, and efficient URL shortener built with Next.js.
 - **Link Management**: Track and manage all your shortened links in one place.
 - **Secure Redirection**: A portal page that previews the destination before redirection, improving security and transparency.
 - **User Authentication**: Create an account to save and manage your personal links across sessions.
-- **Dark Mode Support**: Beautifully designed UI that respects your system preferences.
 - **Optimized Performance**: Built on Next.js 15+ with React Server Components for lightning-fast loads.
 
 ## 🛠️ Tech Stack
